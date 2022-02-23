@@ -108,7 +108,7 @@ body {
 }
 .sys-name {
   font-size: 120%;
-  font-weight: bold;
+  /*font-weight: bold;*/
 }
 
 .box-card {
