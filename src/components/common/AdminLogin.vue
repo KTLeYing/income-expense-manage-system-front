@@ -3,22 +3,17 @@
     <div class="login">
       <el-card class="card">
         <div slot="header" class="clearfix">
-          <span class="sysName">智能收支管理平台</span>
+          <span class="sysName">智能收支管理后台</span>
         </div>
         <div class="cardBody">
           <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
-            <el-form-item label="用户名" prop="username">
-              <el-input v-model="formData.username" placeholder="请输入用户名" show-word-limit clearable
+            <el-form-item label="用户名" prop="adminName">
+              <el-input v-model="formData.adminName" placeholder="请输入用户名" show-word-limit clearable
                         prefix-icon='el-icon-user-solid'></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password">
               <el-input v-model="formData.password" placeholder="请输入密码" clearable prefix-icon='el-icon-lock'
                         show-password ></el-input>
-            </el-form-item>
-            <el-form-item label="验证码" prop="verifyCode">
-                <el-input class="verifyCode" v-model="formData.verifyCode" placeholder="请输入验证码" clearable
-                          prefix-icon='el-icon-c-scale-to-original'></el-input>
-                <img class="imgCode" type="primary" size="medium" onclick="this.src='/incomeExpense/code/createCaptcha?d='+new Date()*1" src="/incomeExpense/code/createCaptcha" /></img>
             </el-form-item>
             <el-form-item size="large">
               <el-button class="submitForm" type="primary" @click="submitForm">登录</el-button>
@@ -31,10 +26,6 @@
 <!--                </router-link>-->
 <!--                <a class="forgetPassword" @click="centerDialogVisible = true">忘记密码?</a>-->
                 <el-button class="forgetPassword" type="text" @click="centerDialogVisible = true">忘记密码?</el-button>
-                |
-                <router-link :to="{ name: 'UserRegister'}">
-                  <a class="registerUser" href="" target="_blank" align="right">注册新账号</a>
-                </router-link>
               </div>
             </el-form-item>
           </el-form>
@@ -42,8 +33,8 @@
       </el-card>
     </div>
     <div class="adminLogin">
-      <router-link :to="{path: '/adminLogin'}">
-        <a class="adminHerf" href="register.vue" target="_blank" >管理员入口</a>
+      <router-link :to="{path: '/'}">
+        <a class="adminHerf" href="register.vue" target="_blank" >普通用户入口</a>
       </router-link>
     </div>
 
@@ -55,8 +46,8 @@
       center>
       <div class="content">
         <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
-          <el-form-item label="用户名" prop="username1">
-            <el-input v-model="formData.username1" placeholder="请输入用户名" show-word-limit clearable
+          <el-form-item label="用户名" prop="adminName1">
+            <el-input v-model="formData.adminName1" placeholder="请输入用户名" show-word-limit clearable
                       prefix-icon='el-icon-user-solid'></el-input>
           </el-form-item>
           <el-form-item label="手机号" prop="phone">
@@ -65,7 +56,7 @@
           <el-form-item label="验证码" prop="messageCode">
             <el-input class="messageCode" v-model="formData.messageCode" placeholder="请输入验证码" clearable
                       prefix-icon='el-icon-c-scale-to-original'></el-input>
-            <el-button class="codeBt" src="" type="primary" size="medium"> 获取验证码 </el-button>
+            <el-button class="codeBt" type="primary" size="medium"> 获取验证码 </el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -81,27 +72,26 @@
 
 <script>
 export default {
-  name: "UserLogin",
+  name: "AdminLogin",
   components: {},
   props: [],
   data() {
     return {
       centerDialogVisible: false,
       formData: {
-        username: '',
-        username1: '',
+        adminName: '',
+        adminName1: '',
         password: '',
-        verifyCode: '',
         phone: '',
         messageCode: '',
       },
       rules: {
-        username: [{
+        adminName: [{
           required: true,
           message: '请输入用户名',
           trigger: 'blur'
         }],
-        username1: [{
+        adminName1: [{
           required: true,
           message: '请输入用户名',
           trigger: 'blur'
@@ -118,15 +108,6 @@ export default {
         },{
           pattern: /^1[3456789]\d{9}$/,
           message: '手机号格式不正确'
-        }],
-        verifyCode: [{
-          required: true,
-          message: '请输入验证码',
-          trigger: 'blur'
-        }, {
-          len: 4,
-          message: "长度不为4",
-          trigger: 'blur'
         }],
         messageCode: [{
           required: true,
@@ -145,65 +126,11 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    //用户登录请求后台处理
     submitForm() {
-      //获取并校验elFrom表单字段
       this.$refs['elForm'].validate(valid => {
-        if (valid){
-          let formData = new FormData();   //封装请求数据, application/form-data请求格式
-          formData.append('username', this.formData.username);
-          formData.append('password', this.formData.password);
-          formData.append('verifyCode', this.formData.verifyCode);
-          //表单校验通过，提交表单去登录
-          this.$axios.post('/user/userLogin', formData
-          ).then((res) => {
-            console.log(res);
-            console.log(res.response);
-            if (res.data.code != 203){
-              //返回码不为203则登录失败
-              this.$message({
-                showClose: true,
-                message: res.data.msg,
-                type: 'error'
-              });
-              return false;
-            }
-            //登录成功后的其他处理
-            this.loginSuccess(res)
-            //登录成功处理后跳转到首页
-            this.$router.push('/home'); //通过请求路径路由跳转
-          }).catch(err => {
-            //请求出现异常则登录失败
-            console(err);
-            this.$message({
-              showClose: true,
-              message: res.data.msg,
-              type: 'error'
-            });
-          })
-        } else { //否则表单校验失败
-          this.$message({
-            showClose: true,
-            message: '提交表单失败！',
-            type: 'error'
-          });
-          return false;
-        }
+        if (!valid) return
+        // TODO 提交表单
       })
-    },
-    loginSuccess (res) {
-      //登录成功后的其他处理
-      //设置存储token处理
-      // this.sessiontoken = res.headers['sessiontoken'];  //从请求头获取token
-      // sessionStorage.setItem('userToken', this.sessiontoken);
-      // this.changeLogin({sessiontoken: this.sessiontoken});
-      // this.setToken(this.sessiontoken);
-      //提示登录成功
-      this.$message({
-        showClose: true,
-        message: '登录成功！',
-        type: 'success'
-      });
     },
     resetForm() {
       this.$refs['elForm'].resetFields()
@@ -249,21 +176,9 @@ export default {
     align-items: center;
     margin-right: 10%;
   }
-  .verifyCode{
-    float: left;
-    width: 65%;
-  }
   .messageCode{
     float: left;
     width: 65%;
-  }
-  .imgCode{
-    float: right;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: red;
-    width: 30%;
   }
   .codeBt{
     float: right;

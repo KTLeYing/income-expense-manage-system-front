@@ -6,11 +6,30 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      "/incomeExpense": {
+        ws: false,
+        // 只需要改动target 改成后端接口的根路径
+        // 我们把后端接口的根路径代理成立/api
+        // 这种方式只存在开发阶段 如果项目上线了 后端会处理跨域
+        target: "http://localhost:8888/incomeExpense/",
+        changeOrigin: true,
+        pathRewrite: {
+          "^/incomeExpense": "",
+        },
+      },
+    },
+    // proxyTable: {
+    //   // 配置转发的域 /api下面的请求均发起转发
+    //   '/api':{
+    //     target:'http://127.0.0.1:5888',
+    //     changeOrigin:true
+    //   }
+    // },
+
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
@@ -20,7 +39,7 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */
