@@ -5,18 +5,18 @@
           <div class="title">
             <span class="sysName">智能收支管理平台</span>
           </div>
-          <el-menu-item index="1">处理中心</el-menu-item>
-          <el-menu-item index="2">消息中心</el-menu-item>
-          <el-menu-item index="3"><!--<a href="https://www.ele.me" target="_blank">-->订单管理<!--</a>--></el-menu-item>
-          <el-menu-item index="4">处理中心</el-menu-item>
-          <el-menu-item index="5">处理中心</el-menu-item>
-          <el-menu-item index="6">处理中心</el-menu-item>
-          <el-menu-item index="7">处理中心</el-menu-item>
-          <el-menu-item index="8">处理中心</el-menu-item>
-          <el-menu-item index="9">处理中心</el-menu-item>
-          <el-menu-item index="10">处理中心</el-menu-item>
-          <el-submenu index="11">
-            <template slot="title">个人中心</template>
+          <el-menu-item class="menu-item" index="1">处理中心</el-menu-item>
+          <el-menu-item class="menu-item" index="2">消息中心</el-menu-item>
+          <el-menu-item class="menu-item" index="3"><!--<a href="https://www.ele.me" target="_blank">-->订单管理<!--</a>--></el-menu-item>
+          <el-menu-item class="menu-item" index="4">处理中心</el-menu-item>
+          <el-menu-item class="menu-item" index="5">处理中心</el-menu-item>
+          <el-menu-item class="menu-item" index="6">处理中心</el-menu-item>
+          <el-menu-item class="menu-item" index="7">处理中心</el-menu-item>
+          <el-menu-item class="menu-item" index="8">处理中心</el-menu-item>
+          <el-menu-item class="menu-item" index="9">处理中心</el-menu-item>
+          <el-menu-item class="menu-item" index="10">处理中心</el-menu-item>
+          <el-submenu class="menu-item" index="11">
+            <template class="menu-item" slot="title">个人中心</template>
             <el-menu-item index="11-1">个人中心</el-menu-item>
             <el-menu-item index="11-2">修改密码</el-menu-item>
             <el-menu-item index="11-3">
@@ -115,6 +115,7 @@
   .foot{
     position: absolute;
     bottom: 0;
+    right: 0;
     width: 100%;
     height: 5%;
     display: flex;
@@ -137,11 +138,15 @@
   .table{
     background: #42b983;
     width: 60%;
-    height: 100%;
+    height: 150%;
   }
   .newsList{
     background: #4DD0E1;
     width: 30%;
-    height: 100%;
+    height: 150%;
+  }
+  .menu-item{
+    font-size: 15px;
+    font-weight: bold;
   }
 </style>
