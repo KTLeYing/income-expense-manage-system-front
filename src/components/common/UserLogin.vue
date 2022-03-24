@@ -95,6 +95,7 @@ export default {
         phone: '',
         messageCode: '',
       },
+      userToken: '',
       rules: {
         username: [{
           required: true,
@@ -169,7 +170,18 @@ export default {
               return false;
             }
             //登录成功后的其他处理
-            this.loginSuccess(res)
+            //设置存储token处理
+            this.userToken = res.headers['authorization'];  //从请求头获取token
+            localStorage.setItem('Authorization', this.userToken)
+            // 将登录名使用vuex传递到Home页面
+            //设置全局变量当前用户
+            this.$currentUser = res.data.data.username;
+            //提示登录成功
+            this.$message({
+              showClose: true,
+              message: '登录成功！',
+              type: 'success'
+            });
             //登录成功处理后跳转到首页
             this.$router.push('/home'); //通过请求路径路由跳转
           }).catch(err => {
@@ -190,20 +202,6 @@ export default {
           return false;
         }
       })
-    },
-    loginSuccess (res) {
-      //登录成功后的其他处理
-      //设置存储token处理
-      // this.sessiontoken = res.headers['sessiontoken'];  //从请求头获取token
-      // sessionStorage.setItem('userToken', this.sessiontoken);
-      // this.changeLogin({sessiontoken: this.sessiontoken});
-      // this.setToken(this.sessiontoken);
-      //提示登录成功
-      this.$message({
-        showClose: true,
-        message: '登录成功！',
-        type: 'success'
-      });
     },
     resetForm() {
       this.$refs['elForm'].resetFields()
