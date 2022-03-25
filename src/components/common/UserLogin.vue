@@ -159,7 +159,6 @@ export default {
           this.$axios.post('/user/userLogin', formData
           ).then((res) => {
             console.log(res);
-            console.log(res.response);
             if (res.data.code != 203){
               //返回码不为203则登录失败
               this.$message({

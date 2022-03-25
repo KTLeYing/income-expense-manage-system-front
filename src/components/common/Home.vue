@@ -34,9 +34,40 @@
         <div class="table">
           <div class="tableHead">
             <span class="tableTitle">收支记录表</span>
-            <el-button class="btTable" type="primary">导出</el-button>
-            <el-button class="btAddTable" type="primary">添加</el-button>
-            <el-button class="btDelTable" type="primary">删除选中</el-button>
+            <el-button class="btExport" type="info">导出</el-button>
+            <el-button class="btAddTable" type="success">添加</el-button>
+            <el-button class="btDelTable" type="warning">删除选中</el-button>
+          </div>
+          <div class="tableCondition">
+            <el-row>
+              <el-form  :inline="true"  class="demo-form-inline tableCondition1">
+                <el-form-item label="备注">
+                  <el-input  placeholder="输入备注" style="width: 170px"></el-input>
+                </el-form-item>
+                <el-form-item label="父类型">
+                  <el-input  placeholder="输入父收支类型" style="width: 170px"></el-input>
+                </el-form-item>
+                <el-form-item label="日期">
+                  <el-date-picker
+                    v-model="value2"
+                    align="right"
+                    type="date"
+                    placeholder="选择年月日"
+                    :picker-options="pickerOptions">
+                  </el-date-picker>
+                </el-form-item>
+                <el-form-item label="年月">
+                  <el-date-picker
+                    v-model="value2"
+                    type="month"
+                    placeholder="选择年月">
+                  </el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="onSubmit">查询</el-button>
+                </el-form-item>
+              </el-form>
+            </el-row>
           </div>
           <el-table
             :data="sZRecordlist"
@@ -52,21 +83,34 @@
               width="50">
             </el-table-column>
             <el-table-column
-              prop="date"
-              label="日期"
+              prop="note"
+              label="备注"
               sortable
               width="180">
             </el-table-column>
             <el-table-column
-              prop="name"
-              label="姓名"
+              prop="num"
+              label="金额"
               sortable
               width="180">
             </el-table-column>
             <el-table-column
-              prop="address"
-              label="地址"
-              :formatter="formatter">
+              prop="parentCategory"
+              label="父类型"
+              sortable
+              width="180">
+            </el-table-column>
+            <el-table-column
+              prop="sonCategory"
+              label="子类型"
+              sortable
+              width="180">
+            </el-table-column>
+            <el-table-column
+              prop="createTime"
+              label="时间"
+              sortable
+              width="180">
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -128,13 +172,44 @@
         currentPage2: 5,
         currentPage3: 5,
         currentPage4: 4,
-        queryInfo: {
-          query: "",
-          pagenum: 1,
-          pagesize: 10
+        queryParam: {
+          note: "",
+          parentCategory: "",
+          sonCategory: "",
+          realCreateTime: "",
+          realCreateTimeTwo: "",
+          currentPage: 1,
+          pageSize: 10
         },
         goodslist: [],
-        total: 0
+        total: 0,
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          },
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          }, {
+            text: '一周前',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
+            }
+          }]
+        },
+        value1: '',
+        value2: '',
       }
     },
     computed: {},
@@ -146,15 +221,10 @@
     },
     methods: {
       async getSZRecordlist() {
-        this.$axios.get('/incomeExpense/iERecord/selectPageRecord',{params: {
-              "username": this.formData.username,
-              "password": this.formData.password,
-              "verifyCode": this.formData.verifyCode
-            }
+        this.$axios.get('/incomeExpense/iERecord/selectPageRecord',{params: this.queryParam
           }
         ).then((res) => {
           console.log(res);
-          console.log(res.response);
           if (res.data.code != 203){
             //返回码不为203则登录失败
             this.$message({
@@ -165,11 +235,8 @@
             return false;
           }
           //登录成功后的其他处理
-          //登录成功后的其他处理
           //设置存储token处理
           this.userToken = res.headers['authorization'];  //从请求头获取token
-          // sessionStorage.setItem('Authorization', this.userToken);
-          // this.changeLogin({Authorization: this.userToken});
           localStorage.setItem('Authorization', this.userToken)
           // 将登录名使用vuex传递到Home页面
           //提示登录成功
@@ -307,7 +374,7 @@
     background: #42b983;
     margin-left: 4%;
     margin-top: 40%;
-    width: 56%;
+    width: 58%;
     height: 180%;
   }
   .newsList{
@@ -323,7 +390,7 @@
   .block{
     float: left;
   }
-  .btTable{
+  .btExport{
     float: right;
   }
   .btAddTable{
@@ -341,6 +408,14 @@
   .tableHead{
     width: 100%;
     height: 50px;
+  }
+  .tableCondition{
+    padding-top: 10px;
+    width: 100%;
+    height: 50px;
+  }
+  .tableCondition1{
+    float: left;
   }
   .newsHead{
     font-size: 30px;
