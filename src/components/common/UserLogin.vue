@@ -173,8 +173,8 @@ export default {
             this.userToken = res.headers['authorization'];  //从请求头获取token
             localStorage.setItem('Authorization', this.userToken)
             // 将登录名使用vuex传递到Home页面
-            //设置全局变量当前用户
-            this.$currentUser = res.data.data.username;
+            //存储当前用户，传递给其他页面使用
+            // this.$store.commit('storeUsername',res.data.data);
             //提示登录成功
             this.$message({
               showClose: true,

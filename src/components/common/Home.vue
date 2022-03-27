@@ -42,10 +42,10 @@
             <el-row>
               <el-form  :inline="true"  class="demo-form-inline tableCondition1">
                 <el-form-item label="备注">
-                  <el-input  placeholder="输入备注" style="width: 170px"></el-input>
+                  <el-input  placeholder="输入备注" style="width: 130px"></el-input>
                 </el-form-item>
                 <el-form-item label="父类型">
-                  <el-input  placeholder="输入父收支类型" style="width: 170px"></el-input>
+                  <el-input  placeholder="输入父收支类型" style="width: 130px"></el-input>
                 </el-form-item>
                 <el-form-item label="日期">
                   <el-date-picker
@@ -53,14 +53,14 @@
                     align="right"
                     type="date"
                     placeholder="选择年月日"
-                    :picker-options="pickerOptions">
+                    :picker-options="pickerOptions" style="width: 130px">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="年月">
                   <el-date-picker
                     v-model="value2"
                     type="month"
-                    placeholder="选择年月">
+                    placeholder="选择年月" style="width: 130px">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item>
@@ -86,31 +86,31 @@
               prop="note"
               label="备注"
               sortable
-              width="180">
+              width="140">
             </el-table-column>
             <el-table-column
               prop="num"
               label="金额"
               sortable
-              width="180">
+              width="140">
             </el-table-column>
             <el-table-column
               prop="parentCategory"
               label="父类型"
               sortable
-              width="180">
+              width="140">
             </el-table-column>
             <el-table-column
               prop="sonCategory"
               label="子类型"
               sortable
-              width="180">
+              width="140">
             </el-table-column>
             <el-table-column
               prop="createTime"
               label="时间"
               sortable
-              width="180">
+              width="140">
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -181,7 +181,7 @@
           currentPage: 1,
           pageSize: 10
         },
-        goodslist: [],
+        sZRecordlist: [],
         total: 0,
         pickerOptions: {
           disabledDate(time) {
@@ -220,35 +220,19 @@
     mounted() {
     },
     methods: {
+      // get 方法还是post？
+      // 你后台不支持get？
       async getSZRecordlist() {
-        this.$axios.get('/incomeExpense/iERecord/selectPageRecord',{params: this.queryParam
-          }
+        this.$axios.get('/iERecord/selectPageRecord',{params: this.queryParam}
         ).then((res) => {
           console.log(res);
-          if (res.data.code != 203){
-            //返回码不为203则登录失败
-            this.$message({
-              showClose: true,
-              message: res.data.msg,
-              type: 'error'
-            });
+          if (res.data.code !== 200) {
             return false;
           }
-          //登录成功后的其他处理
-          //设置存储token处理
-          this.userToken = res.headers['authorization'];  //从请求头获取token
-          localStorage.setItem('Authorization', this.userToken)
-          // 将登录名使用vuex传递到Home页面
-          //提示登录成功
-          this.$message({
-            showClose: true,
-            message: '登录成功！',
-            type: 'success'
-          });
-          //登录成功处理后跳转到首页
-          this.$router.push('/home'); //通过请求路径路由跳转
+          this.sZRecordlist = res.data.data.records;
+          this.total = res.data.data.total;
         }).catch(err => {
-          //请求出现异常则登录失败
+          //请求出现异常
           console(err);
           this.$message({
             showClose: true,
@@ -256,12 +240,6 @@
             type: 'error'
           });
         })
-
-        if (data.meta.status !== 200) {
-          return this.$message.error(data.meta.msg);
-        }
-        this.goodslist = data.data.goods;
-        this.total = data.data.total;
       },
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
