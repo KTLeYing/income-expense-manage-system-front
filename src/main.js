@@ -43,15 +43,14 @@ new Vue({
 
 //设置axios请求头加入token
 Axios.interceptors.request.use(config => {
-  config.headers['Authorization'] = localStorage.getItem('Authorization');
+    config.headers['Authorization'] = localStorage.getItem('Authorization');
     // if (config.push === '/') {
     //
     // } else {
     //   if (localStorage.getItem('Authorization') && config.headers) {
+    //     //在请求头加入token，名字要和后端接收请求头的token名字一样
     //     config.headers['Authorization'] = localStorage.getItem('Authorization');
     //   }
-    //   //在请求头加入token，名字要和后端接收请求头的token名字一样
-    //   config.headers['Authorization'] = localStorage.getItem('Authorization');
     // }
     return config;
   }, error => {
